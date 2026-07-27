@@ -1,29 +1,52 @@
-//this file acts as a temp standin for actual database
-//later, these function will be rewritten to talk to supabase
-//but the routes calling them won't need to change
-
-let backpack = [];
+const pool = require('./db')
 
 
-//getBackpack
-function unpackBackpack() {
-    return backpack;
+//functions that talk directly to PostgresSQL
+
+async function unpackBackpack(userId) {
+  const result = await pool.query(
+    'SELECT * FROM tabs WHERE user_id = $1 ORDER BY created_at ASC',
+    [userId]
+  )
+  return result.rows
 }
 
-//addTab
-function addToBackpack(item) {
-    backpack.push(item);
-    return item;
+async function addToBackpack(url, title, userId) {
+  const result = await pool.query(
+    'INSERT INTO tabs (url, title, user_id) VALUES ($1, $2, $3) RETURNING *',
+    [url, title, userId]
+  )
+  return result.rows[0]
 }
 
-//clearBackpack
-function emptyBackpack() {
-    backpack = [];
-    return backpack;
+async function removeTab(tabId, userId) {
+  await pool.query(
+    'DELETE FROM tabs WHERE id = $1 AND user_id = $2',
+    [tabId, userId]
+  )
+}
+
+async function emptyBackpack(userId) {
+  await pool.query(
+    'DELETE FROM tabs WHERE user_id = $1',
+    [userId]
+  )
+}
+
+
+async function addToBackpack(url, title, userId) {
+  console.log('Attempting to add tab:', { url, title, userId })
+  const result = await pool.query(
+    'INSERT INTO tabs (url, title, user_id) VALUES ($1, $2, $3) RETURNING *',
+    [url, title, userId]
+  )
+  console.log('Tab added successfully:', result.rows[0])
+  return result.rows[0]
 }
 
 module.exports = {
-    unpackBackpack,
-    addToBackpack,
-    emptyBackpack
-};
+  unpackBackpack,
+  addToBackpack,
+  removeTab,
+  emptyBackpack
+}

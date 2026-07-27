@@ -1,1 +1,8 @@
- 
+.tip {
+  background-color: #f0f4ff;
+  border-left: 4px solid #4a90e2;
+  padding: 10px 15px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #333;
+}

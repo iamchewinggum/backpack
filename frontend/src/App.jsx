@@ -43,9 +43,34 @@ function App() {
     }
   }
 
+
+
+
+
+const handleOpenTab = (tab, tabId) => {
+  window.open(tab.url, '_blank')
+  fetch(`http://localhost:3000/tabs/${tabId}`, {
+    method: 'DELETE'
+  })
+  const updatedTabs = tabs.filter((t) => t.id !== tabId)
+  setTabs(updatedTabs)
+}
+
+const handleRemoveTab = (tabId) => {
+  fetch(`http://localhost:3000/tabs/${tabId}`, {
+    method: 'DELETE'
+  })
+  const updatedTabs = tabs.filter((t) => t.id !== tabId)
+  setTabs(updatedTabs)
+}
+
+
+
   return (
     <div className="container">
       <h1>Virtual Backpack</h1>
+
+      <p className='tip'> Hold <strong>Ctrl</strong> and click <strong>Open</strong> to stay on this page while your tabs open.</p>
 
       <div
         className="drop-zone"
@@ -62,6 +87,8 @@ function App() {
           value={inputUrl}
           onChange={(e) => setInputUrl(e.target.value)}
         />
+
+        
         <button onClick={handleAddUrl}>Add to Backpack</button>
       </div>
 
@@ -70,16 +97,28 @@ function App() {
         {tabs.length === 0 ? (
           <p>No tabs packed yet.</p>
         ) : (
-          tabs.map((tab, index) => (
-            <div key={index}>
-              <a href={tab.url} target="_blank">{tab.title}</a>
-            </div>
-          ))
+
+tabs.map((tab, index) => (
+  <div key={index} className="tab-item">
+    <a href={tab.url} target="_blank" rel="noreferrer">{tab.url}</a>
+    <button onClick={() => handleOpenTab(tab, tab.id)}>Open</button>
+    <button onClick={() => handleRemoveTab(tab.id)}>Remove</button>
+  </div>
+))
+
+
+
         )}
       </div>
-
     </div>
   )
+
+
+
+
+
+
+  
 }
 
 export default App
