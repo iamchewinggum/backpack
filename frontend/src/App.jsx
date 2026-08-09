@@ -1,42 +1,82 @@
-import { useState, useEffect } from 'react'
+ import { useState, useEffect } from 'react'
 import './App.css'
 
-function App() {
-  const [tabs, setTabs] = useState([])
-  const [inputUrl, setInputUrl] = useState('')
-  const [token, setToken] = useState(localStorage.getItem('token')) // 🆕
-  const [showSignup, setShowSignup] = useState(false) // 🆕
-  const [authEmail, setAuthEmail] = useState('') // 🆕
-  const [authPassword, setAuthPassword] = useState('') // 🆕
+function App() { //javascript
 
-  useEffect(() => {
-    if (!token) return // 🆕 don't fetch if not logged in
+
+//React
+  const [tabs, setTabs] = useState([])
+  //array destructuring 
+
+  //tabs = current vlaue
+  //setTabs = function used to change that value
+  // *JavaScript feature
+
+  const [inputUrl, setInputUrl] = useState('')
+  //inputUrl --> setInputURL(setter)
+
+  const [token, setToken] = useState(localStorage.getItem('token'))
+  //token --> setToken (setter)
+
+  const [showSignup, setShowSignup] = useState(false)
+  
+  const [authEmail, setAuthEmail] = useState('')
+  
+  const [authPassword, setAuthPassword] = useState('')
+
+
+
+  //functions
+  //fetch() is a javaScript function used to communicate over HTTP
+  const fetchTabs = () => {
     fetch('http://localhost:3000/backpack', {
-      headers: { Authorization: `Bearer ${token}` } // 🆕 send token with request
+      headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
       .then(data => setTabs(data))
-  }, [token]) // 🆕 re-runs when token changes
+  }
+
+
+
+
+
+
+  useEffect(() => {
+    if (!token) return
+    fetchTabs()
+  }, [token])
+
+/*
+this is describing an HTTP request
+package that is sending to backend
+Request: Method, Headers, Body
+
+Method: GET, POST, PUT, PATCH, DELETE, OPTIONS, TRACE, CONNECT
+Body: turns the js object into JSON text
+Headers: Headers are extra information attached to the request.
+
+*/
+
 
   const saveTabToBackend = async (tab) => {
     await fetch('http://localhost:3000/tabs', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}` // 🆕 send token with request
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify(tab)
     })
   }
 
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault()
     const url = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain')
     const title = url
     if (url) {
       const newTab = { url, title }
-      setTabs([...tabs, newTab])
-      saveTabToBackend(newTab)
+      await saveTabToBackend(newTab)
+      fetchTabs()
     }
   }
 
@@ -44,12 +84,12 @@ function App() {
     e.preventDefault()
   }
 
-  const handleAddUrl = () => {
+  const handleAddUrl = async () => {
     if (inputUrl !== '') {
       const newTab = { url: inputUrl, title: inputUrl }
-      setTabs([...tabs, newTab])
-      saveTabToBackend(newTab)
+      await saveTabToBackend(newTab)
       setInputUrl('')
+      fetchTabs()
     }
   }
 
@@ -57,22 +97,32 @@ function App() {
     window.open(tab.url, '_blank')
     fetch(`http://localhost:3000/tabs/${tabId}`, {
       method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` } // 🆕 send token with request
+      headers: { Authorization: `Bearer ${token}` }
     })
     const updatedTabs = tabs.filter((t) => t.id !== tabId)
     setTabs(updatedTabs)
   }
+
+
+
+
 
   const handleRemoveTab = (tabId) => {
     fetch(`http://localhost:3000/tabs/${tabId}`, {
       method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` } // 🆕 send token with request
+      headers: { Authorization: `Bearer ${token}` }
     })
     const updatedTabs = tabs.filter((t) => t.id !== tabId)
     setTabs(updatedTabs)
   }
 
-  const handleLogin = async () => { // 🆕
+
+
+
+
+
+
+  const handleLogin = async () => {
     const res = await fetch('http://localhost:3000/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -80,16 +130,21 @@ function App() {
     })
     const data = await res.json()
     if (data.token) {
-      localStorage.setItem('token', data.token) // 🆕 save token to localStorage
-      setToken(data.token) // 🆕 update state so app re-renders
-      setAuthEmail('') // 🆕 clear form
-      setAuthPassword('') // 🆕 clear form
+      localStorage.setItem('token', data.token)
+      setToken(data.token)
+      setAuthEmail('')
+      setAuthPassword('')
     } else {
-      alert(data.error || 'Login failed') // 🆕
+      alert(data.error || 'Login failed')
     }
   }
 
-  const handleSignup = async () => { // 🆕
+
+
+
+
+//JavaScript making an HTTP request to backend
+  const handleSignup = async () => {
     const res = await fetch('http://localhost:3000/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -97,44 +152,59 @@ function App() {
     })
     const data = await res.json()
     if (res.ok) {
-      alert('Account created! Please log in.') // 🆕
-      setShowSignup(false) // 🆕 switch back to login form
-      setAuthEmail('') // 🆕
-      setAuthPassword('') // 🆕
+      alert('Account created! Please log in.')
+      setShowSignup(false)
+      setAuthEmail('')
+      setAuthPassword('')
     } else {
-      alert(data.error || 'Signup failed') // 🆕
+      alert(data.error || 'Signup failed')
     }
   }
 
-  const handleLogout = () => { // 🆕
-    localStorage.removeItem('token') // 🆕 remove token from localStorage
-    setToken(null) // 🆕 clear token from state
-    setTabs([]) // 🆕 clear tabs from state
+
+
+
+
+
+
+
+
+
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    setToken(null)
+    setTabs([])
   }
 
-  if (!token) { // 🆕 show login/signup form if not logged in
+  if (!token) {
     return (
+
+      //JSX
+      // special syntax that lets you 
+      // describe the UI using HTML like 
+      // elements
       <div className="container">
         <h1>Virtual Backpack</h1>
-        <h2>{showSignup ? 'Sign Up' : 'Log In'}</h2> {/* 🆕 */}
+        <h2>{showSignup ? 'Sign Up' : 'Log In'}</h2>
         <input
           type="email"
           placeholder="Email"
           value={authEmail}
           onChange={(e) => setAuthEmail(e.target.value)}
-        /> {/* 🆕 */}
+        />
         <input
           type="password"
           placeholder="Password"
           value={authPassword}
           onChange={(e) => setAuthPassword(e.target.value)}
-        /> {/* 🆕 */}
+        />
         <button onClick={showSignup ? handleSignup : handleLogin}>
           {showSignup ? 'Sign Up' : 'Log In'}
-        </button> {/* 🆕 */}
+        </button>
         <p onClick={() => setShowSignup(!showSignup)} style={{ cursor: 'pointer', color: 'blue' }}>
           {showSignup ? 'Already have an account? Log in' : "Don't have an account? Sign up"}
-        </p> {/* 🆕 */}
+        </p>
       </div>
     )
   }
@@ -142,7 +212,7 @@ function App() {
   return (
     <div className="container">
       <h1>Virtual Backpack</h1>
-      <button onClick={handleLogout}>Log Out</button> {/* 🆕 */}
+      <button onClick={handleLogout}>Log Out</button>
 
       <div
         className="drop-zone"
