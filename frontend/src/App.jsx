@@ -1,6 +1,8 @@
  import { useState, useEffect } from 'react'
 import './App.css'
 
+const API_URL = 'https://backpack-5i7d.onrender.com'
+
 function App() { //javascript
 
 
@@ -29,7 +31,7 @@ function App() { //javascript
   //functions
   //fetch() is a javaScript function used to communicate over HTTP
   const fetchTabs = () => {
-    fetch('http://localhost:3000/backpack', {
+    fetch(`${API_URL}/backpack`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -59,7 +61,7 @@ Headers: Headers are extra information attached to the request.
 
 
   const saveTabToBackend = async (tab) => {
-    await fetch('http://localhost:3000/tabs', {
+    await fetch(`${API_URL}/tabs`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -95,7 +97,7 @@ Headers: Headers are extra information attached to the request.
 
   const handleOpenTab = (tab, tabId) => {
     window.open(tab.url, '_blank')
-    fetch(`http://localhost:3000/tabs/${tabId}`, {
+    fetch(`${API_URL}/tabs/${tabId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` }
     })
@@ -108,7 +110,7 @@ Headers: Headers are extra information attached to the request.
 
 
   const handleRemoveTab = (tabId) => {
-    fetch(`http://localhost:3000/tabs/${tabId}`, {
+    fetch(`${API_URL}/tabs/${tabId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` }
     })
@@ -123,7 +125,7 @@ Headers: Headers are extra information attached to the request.
 
 
   const handleLogin = async () => {
-    const res = await fetch('http://localhost:3000/login', {
+    const res = await fetch(`${API_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: authEmail, password: authPassword })
@@ -145,7 +147,7 @@ Headers: Headers are extra information attached to the request.
 
 //JavaScript making an HTTP request to backend
   const handleSignup = async () => {
-    const res = await fetch('http://localhost:3000/signup', {
+    const res = await fetch(`${API_URL}/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: authEmail, password: authPassword })
