@@ -26,6 +26,18 @@ function App() { //javascript
   
   const [authPassword, setAuthPassword] = useState('')
 
+  function ColdStartNotice() {
+  return (
+    <p className="cold-start-notice">
+      ⏳ <strong>Heads up:</strong> this app runs on free hosting, so the server
+      sleeps after 15 minutes of inactivity. Your first log in may take 30–50
+      seconds. It's fast after that.
+    </p>
+  )
+}
+
+  
+
 
 
   //functions
@@ -189,6 +201,8 @@ Headers: Headers are extra information attached to the request.
       <div className="container">
         <h1>Virtual Backpack</h1>
         <h2>{showSignup ? 'Sign Up' : 'Log In'}</h2>
+        <ColdStartNotice />
+        
         <input
           type="email"
           placeholder="Email"
