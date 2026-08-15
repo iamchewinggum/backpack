@@ -226,7 +226,7 @@ function App() { //javascript
       // elements
       <div className="page page--auth">
         <div className="card card--auth">
-          <h1 className="wordmark">Virtual Backpack</h1>
+          <h1 className="wordmark">Backpack</h1>
           <p className="subhead">Save links now, open them later.</p>
 
           <div className="field">
@@ -286,7 +286,7 @@ function App() { //javascript
     <div className="page">
       <header className="topbar">
         <div>
-          <h1 className="wordmark wordmark--sm">Virtual Backpack</h1>
+          <h1 className="wordmark wordmark--sm">Backpack</h1>
           <p className="count">{tabs.length} {tabs.length === 1 ? 'link saved' : 'links saved'}</p>
         </div>
         <button className="btn btn--ghost" onClick={handleLogout}>Log out</button>
