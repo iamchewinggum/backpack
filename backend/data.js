@@ -34,15 +34,7 @@ async function emptyBackpack(userId) {
 }
 
 
-async function addToBackpack(url, title, userId) {
-  console.log('Attempting to add tab:', { url, title, userId })
-  const result = await pool.query(
-    'INSERT INTO tabs (url, title, user_id) VALUES ($1, $2, $3) RETURNING *',
-    [url, title, userId]
-  )
-  console.log('Tab added successfully:', result.rows[0])
-  return result.rows[0]
-}
+ 
 
 module.exports = {
   unpackBackpack,
